@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ai實戰寶典 Toolbox</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 全域變數 ===== */
+  :root {
+    --bg: #F7F7F5;
+    --card-bg: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-hint: #9B9B9B;
+    --accent: #2563EB;
+    --accent-light: #EFF6FF;
+    --accent-hover: #1D4ED8;
+    --border: #E5E5E3;
+    --border-hover: #D1D1CF;
+    --tag-bg: #F0F0EE;
+    --tag-active-bg: #2563EB;
+    --tag-active-text: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font-body: 'Noto Sans TC', -apple-system, sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+    border-bottom: 1px solid #1E3A8A;
+    padding: 2rem 1.5rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner { max-width: 960px; margin: 0 auto; }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .site-title {
+    flex: 1 1 0;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+  }
+
+  .site-title span { color: #93C5FD; }
+
+  .count-wrap { flex: 1 1 0; display: flex; justify-content: flex-end; }
+
+  .tool-count {
+    white-space: nowrap;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.15);
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+  }
+
+  /* ===== 搜尋框 ===== */
+  .search-box { position: relative; flex: 0 1 420px; }
+
+  .search-box svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-hint);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.75rem;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    border: 1px solid transparent;
+    border-radius: 100px;
+    background: #FFFFFF;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: #93C5FD;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  }
+
+  .search-input::placeholder { color: var(--text-hint); }
+
+  /* ===== 分類標籤 ===== */
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .tag {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.9);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .tag:hover { border-color: #FFFFFF; background: rgba(255,255,255,0.18); color: #FFFFFF; }
+
+  .tag.active {
+    background: #FFFFFF;
+    color: #1E3A8A;
+    border-color: #FFFFFF;
+    font-weight: 500;
+  }
+
+  /* ===== 主要內容 ===== */
+  .main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  /* ===== 卡片 ===== */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .card:hover::before { transform: scaleX(1); }
+
+  .card-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); line-height: 1.4; }
+  .card-desc { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; flex: 1; }
+
+  .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.25rem; }
+
+  .card-category {
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .card-arrow { color: var(--text-hint); transition: transform 0.2s, color 0.2s; }
+  .card:hover .card-arrow { transform: translateX(3px); color: var(--accent); }
+
+  /* ===== 空狀態 ===== */
+  .empty { text-align: center; padding: 4rem 1rem; color: var(--text-hint); grid-column: 1 / -1; }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+  .disclaimer { margin: 0 0 1rem; color: rgba(255,255,255,0.72); font-size: 0.75rem; line-height: 1.5; }
+
+  /* ===== RWD ===== */
+  @media (max-width: 600px) {
+    .header { padding: 1.25rem 1rem 1rem; }
+    .main { padding: 1rem; }
+    .site-title { font-size: 1.25rem; flex: 0 1 auto; }
+    .header-top { flex-wrap: wrap; gap: 0.75rem; }
+    .search-box { flex: 1 1 100%; order: 3; }
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <h1 class="site-title">Ai實戰寶典<span> Toolbox</span></h1>
+
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜尋工具、課程或資源...">
+      </div>
+
+      <div class="count-wrap"><span class="tool-count" id="toolCount">0 / 0 個資源</span></div>
+    </div>
+
+    <p class="disclaimer">個人教學用 AI 學習資源整理，持續累積中；連結內容以官方網站為準，如有異動請自行查證。</p>
+
+    <div class="tags" id="tagsContainer"></div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+  // =============================================================
+  // 📌 資料區：想新增/修改工具，直接編輯下面這個陣列即可
+  // =============================================================
+  const TOOLS = [
+    // ---- 入門觀念 ----
+    { name: '什麼是生成式 AI？', desc: 'Google 出品的生成式 AI 入門白皮書，適合完全新手建立基礎觀念', link: 'https://www.kaggle.com/whitepaper-foundational-llm-and-text-generation', category: '入門觀念' },
+    { name: 'AI 詞彙快速上手', desc: 'Google Machine Learning 術語表，中英對照常見 AI 名詞', link: 'https://developers.google.com/machine-learning/glossary', category: '入門觀念' },
+    { name: 'Elements of AI', desc: '赫爾辛基大學開的免費 AI 入門線上課程，無需程式基礎', link: 'https://www.elementsofai.com/', category: '入門觀念' },
+
+    // ---- Prompt 工程 ----
+    { name: 'Anthropic 提示詞工程指南', desc: 'Claude 官方的 Prompt Engineering 教學，含範例與最佳實務', link: 'https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview', category: 'Prompt工程' },
+    { name: 'Prompt Engineering Guide', desc: '社群維護的完整提示詞工程百科，涵蓋各種技巧與論文', link: 'https://www.promptingguide.ai/', category: 'Prompt工程' },
+    { name: 'OpenAI 提示詞最佳實務', desc: 'OpenAI 官方提示詞撰寫建議與範例', link: 'https://platform.openai.com/docs/guides/prompt-engineering', category: 'Prompt工程' },
+    { name: 'Google 提示詞白皮書', desc: 'Google 出品的 Prompt Engineering 實戰白皮書', link: 'https://www.kaggle.com/whitepaper-prompt-engineering', category: 'Prompt工程' },
+
+    // ---- AI 工具實戰 ----
+    { name: 'Claude', desc: 'Anthropic 出品的對話式 AI 助理，適合教學示範', link: 'https://claude.ai', category: 'AI工具' },
+    { name: 'ChatGPT', desc: 'OpenAI 對話式 AI，最廣為人知的入門工具', link: 'https://chatgpt.com', category: 'AI工具' },
+    { name: 'Gemini', desc: 'Google 出品的多模態 AI 助理', link: 'https://gemini.google.com', category: 'AI工具' },
+    { name: 'NotebookLM', desc: 'Google 的筆記型研究助理，可上傳資料生成摘要與 Podcast', link: 'https://notebooklm.google.com/', category: 'AI工具' },
+    { name: 'Perplexity', desc: '具備即時搜尋與引用來源的 AI 問答工具', link: 'https://www.perplexity.ai/', category: 'AI工具' },
+    { name: 'Midjourney', desc: '主流 AI 圖像生成工具，適合教學展示創意應用', link: 'https://www.midjourney.com/', category: 'AI工具' },
+
+    // ---- 技術文件 ----
+    { name: 'Claude 官方文件', desc: 'Anthropic API 與 Claude 使用的完整技術文件', link: 'https://docs.claude.com', category: '技術文件' },
+    { name: 'OpenAI 官方文件', desc: 'OpenAI API 與模型使用說明', link: 'https://platform.openai.com/docs', category: '技術文件' },
+    { name: 'Anthropic Cookbook', desc: '官方提供的實戰程式碼範例集，涵蓋各種應用場景', link: 'https://github.com/anthropics/anthropic-cookbook', category: '技術文件' },
+    { name: 'Hugging Face 課程', desc: '免費開源的 NLP／LLM 技術課程，含實作練習', link: 'https://huggingface.co/learn', category: '技術文件' },
+
+    // ---- 線上課程 ----
+    { name: 'DeepLearning.AI 短期課程', desc: '吳恩達團隊出品的 AI 應用短期課程，多與各大廠合作', link: 'https://www.deeplearning.ai/short-courses/', category: '線上課程' },
+    { name: 'Google AI Essentials', desc: 'Google 出品的 AI 素養入門課程，適合一般大眾', link: 'https://grow.google/ai-essentials/', category: '線上課程' },
+    { name: 'Fast.ai 實作課程', desc: '以程式實作為主的深度學習課程，適合有程式基礎者', link: 'https://www.fast.ai/', category: '線上課程' },
+
+    // ---- 社群與更新 ----
+    { name: 'Anthropic 最新消息', desc: 'Claude 與 Anthropic 官方公告、研究與產品更新', link: 'https://www.anthropic.com/news', category: '社群與更新' },
+    { name: 'OpenAI Blog', desc: 'OpenAI 官方部落格，發布模型與產品最新動態', link: 'https://openai.com/news/', category: '社群與更新' },
+    { name: 'Papers with Code', desc: '追蹤最新 AI 論文與對應開源實作', link: 'https://paperswithcode.com/', category: '社群與更新' },
+  ];
+
+  let currentCategory = 'all';
+  let currentSearch = '';
+
+  const grid = document.getElementById('grid');
+  const tagsContainer = document.getElementById('tagsContainer');
+  const toolCount = document.getElementById('toolCount');
+  const searchInput = document.getElementById('searchInput');
+
+  function renderTags() {
+    const categories = [...new Set(TOOLS.map(t => t.category))];
+    tagsContainer.innerHTML = '<button class="tag active" data-category="all">全部</button>';
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'tag';
+      btn.dataset.category = cat;
+      btn.textContent = cat;
+      tagsContainer.appendChild(btn);
+    });
+    tagsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tag');
+      if (!btn) return;
+      tagsContainer.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.dataset.category;
+      renderCards();
+    });
+  }
+
+  function renderCards() {
+    const filtered = TOOLS.filter(t => {
+      const matchCategory = currentCategory === 'all' || t.category === currentCategory;
+      const q = currentSearch.trim().toLowerCase();
+      const matchSearch = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q);
+      return matchCategory && matchSearch;
+    });
+
+    toolCount.textContent = `${filtered.length} / ${TOOLS.length} 個資源`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>找不到符合的資源</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(t => `
+      <a class="card" href="${t.link}" target="_blank" rel="noopener noreferrer">
+        <div class="card-title">${t.name}</div>
+        <div class="card-desc">${t.desc}</div>
+        <div class="card-footer">
+          <span class="card-category">${t.category}</span>
+          <svg class="card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M7 17 17 7"></path><path d="M7 7h10v10"></path>
+          </svg>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    renderCards();
+  });
+
+  renderTags();
+  renderCards();
+</script>
+</body>
+</html>
