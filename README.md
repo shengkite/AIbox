@@ -1,4 +1,4 @@
-# AI實戰寶典 Toolbox
+# AI實戰寶典 AIbox
 
 AI 學習與教學資源工具列，仿照 [aimaster888.github.io/toolbox](https://aimaster888.github.io/toolbox/) 的版面風格製作。
 
